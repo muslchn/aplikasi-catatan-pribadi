@@ -1,0 +1,339 @@
+:root {
+  --primary: #ffb703;
+  --primary-strong: #fb8500;
+  --background: #111827;
+  --surface: #1f2937;
+  --surface-soft: #243244;
+  --border: #42506a;
+  --danger: #ef4444;
+  --text: #f8fafc;
+  --muted: #cbd5e1;
+  --shadow: 0 20px 45px rgba(0, 0, 0, 0.22);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-width: 320px;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--background);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+.app-container {
+  min-height: 100vh;
+  color: var(--text);
+  background: linear-gradient(180deg, #172033 0, var(--background) 360px);
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px max(20px, calc((100% - 1120px) / 2));
+  border-bottom: 1px solid rgba(203, 213, 225, 0.18);
+  background: rgba(17, 24, 39, 0.88);
+  backdrop-filter: blur(16px);
+}
+
+.app-header__brand {
+  color: var(--text);
+  font-size: 22px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.navigation ul {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+}
+
+.navigation a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.navigation a.active,
+.navigation a:hover {
+  border-color: rgba(255, 183, 3, 0.36);
+  color: var(--text);
+  background: rgba(255, 183, 3, 0.1);
+}
+
+main {
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 36px 0 110px;
+}
+
+.page-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.page-heading h1,
+.add-new-page h1,
+.not-found-page h1 {
+  font-size: clamp(32px, 7vw, 54px);
+  line-height: 1.08;
+}
+
+.search-bar input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  background: rgba(31, 41, 55, 0.72);
+  outline: none;
+}
+
+.search-bar input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(255, 183, 3, 0.18);
+}
+
+.search-bar input::placeholder {
+  color: var(--muted);
+}
+
+.notes-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.notes-list-empty {
+  margin-top: 24px;
+  padding: 28px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  text-align: center;
+  background: rgba(31, 41, 55, 0.54);
+}
+
+.note-item {
+  min-height: 230px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-top: 5px solid var(--primary);
+  border-radius: 8px;
+  background: rgba(31, 41, 55, 0.86);
+  box-shadow: var(--shadow);
+}
+
+.note-item__title {
+  margin-bottom: 8px;
+  font-size: 22px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.note-item__title a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.note-item__title a:hover {
+  color: var(--primary);
+}
+
+.note-item__createdAt,
+.detail-page__createdAt {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.note-item__body {
+  display: -webkit-box;
+  margin-top: 18px;
+  overflow: hidden;
+  color: #e5e7eb;
+  line-height: 1.6;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+}
+
+.note-item__body p,
+.detail-page__body p {
+  margin-bottom: 12px;
+}
+
+.detail-page {
+  max-width: 820px;
+}
+
+.detail-page__title {
+  margin-bottom: 12px;
+  font-size: clamp(38px, 8vw, 72px);
+  line-height: 1.04;
+  overflow-wrap: anywhere;
+}
+
+.detail-page__body {
+  margin-top: 34px;
+  color: #e5e7eb;
+  font-size: 18px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.homepage__action,
+.detail-page__action,
+.add-new-page__action {
+  position: fixed;
+  right: max(24px, calc((100% - 1120px) / 2));
+  bottom: 28px;
+  display: flex;
+  gap: 14px;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border: 0;
+  border-radius: 50%;
+  color: #111827;
+  background: var(--primary);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.action:hover {
+  background: var(--primary-strong);
+}
+
+.action--delete {
+  color: #fff;
+  background: var(--danger);
+}
+
+.action--archive {
+  background: #38bdf8;
+}
+
+.add-new-page__input {
+  margin-top: 28px;
+}
+
+.add-new-page__input__title {
+  width: 100%;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  background: transparent;
+  font-size: clamp(36px, 9vw, 64px);
+  font-weight: 700;
+  outline: none;
+}
+
+.add-new-page__input__title::placeholder {
+  color: rgba(203, 213, 225, 0.62);
+}
+
+.add-new-page__input__body {
+  width: 100%;
+  min-height: 360px;
+  margin-top: 24px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  background: rgba(31, 41, 55, 0.72);
+  font-size: 20px;
+  line-height: 1.7;
+  outline: none;
+}
+
+.add-new-page__input__body:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(255, 183, 3, 0.18);
+}
+
+[data-placeholder]:empty::before {
+  color: rgba(203, 213, 225, 0.62);
+  content: attr(data-placeholder);
+}
+
+.not-found-page {
+  max-width: 680px;
+}
+
+.not-found-page p {
+  margin: 16px 0;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.not-found-page a {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+@media screen and (max-width: 640px) {
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  main {
+    width: min(100% - 28px, 1120px);
+    padding-top: 28px;
+  }
+
+  .navigation ul {
+    flex-wrap: wrap;
+  }
+
+  .homepage__action,
+  .detail-page__action,
+  .add-new-page__action {
+    right: 18px;
+    bottom: 18px;
+  }
+
+  .action {
+    width: 52px;
+    height: 52px;
+  }
+}
