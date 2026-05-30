@@ -26,7 +26,7 @@ function NoteDetailPage({
 
   const onToggleArchive = () => {
     toggleArchive(note.id, note.archived);
-    navigate(note.archived ? '/archives' : '/');
+    navigate(note.archived ? '/' : '/archives');
   };
 
   return (
