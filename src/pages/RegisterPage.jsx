@@ -1,13 +1,14 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import useInput from '../hooks/useInput';
 import { register } from '../utils/network-data';
 
 function RegisterPage() {
   const navigate = useNavigate();
-  const [name, setName] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [name, onNameChange] = useInput('');
+  const [email, onEmailChange] = useInput('');
+  const [password, onPasswordChange] = useInput('');
+  const [confirmPassword, onConfirmPasswordChange] = useInput('');
   const [loading, setLoading] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState('');
 
@@ -38,7 +39,7 @@ function RegisterPage() {
           id="name"
           type="text"
           value={name}
-          onChange={(event) => setName(event.target.value)}
+          onChange={onNameChange}
           autoComplete="name"
           required
         />
@@ -47,7 +48,7 @@ function RegisterPage() {
           id="email"
           type="email"
           value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          onChange={onEmailChange}
           autoComplete="email"
           required
         />
@@ -56,7 +57,7 @@ function RegisterPage() {
           id="password"
           type="password"
           value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={onPasswordChange}
           autoComplete="new-password"
           minLength={6}
           required
@@ -66,7 +67,7 @@ function RegisterPage() {
           id="confirm-password"
           type="password"
           value={confirmPassword}
-          onChange={(event) => setConfirmPassword(event.target.value)}
+          onChange={onConfirmPasswordChange}
           autoComplete="new-password"
           minLength={6}
           required

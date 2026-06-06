@@ -100,7 +100,8 @@ Data yang disimpan di `localStorage`:
 - `src/App.jsx` mengatur layout utama, navigasi, tombol tema, status pengguna, logout, proteksi route, dan fallback route.
 - `src/contexts/AuthContext.jsx` mengelola status autentikasi, pemulihan sesi dari token, pengambilan data pengguna login, dan logout.
 - `src/contexts/ThemeContext.jsx` mengelola tema gelap/terang dengan React Context dan menyimpan preferensi ke `localStorage`.
-- `src/pages/LoginPage.jsx` dan `src/pages/RegisterPage.jsx` memakai Hooks untuk controlled form, loading state, submit handler, dan navigasi setelah proses berhasil.
+- `src/hooks/useInput.js` mengekstraksi logika controlled input agar form login dan registrasi tidak menduplikasi handler input.
+- `src/pages/LoginPage.jsx` dan `src/pages/RegisterPage.jsx` memakai custom Hook `useInput`, loading state, submit handler, dan navigasi setelah proses berhasil.
 - `src/pages/HomePage.jsx` mengambil catatan aktif dari API, menampilkan loading, dan melakukan pencarian berdasarkan judul.
 - `src/pages/ArchivedNotesPage.jsx` mengambil catatan arsip dari API, menampilkan loading, dan melakukan pencarian berdasarkan judul.
 - `src/pages/AddNotePage.jsx` mengirim catatan baru ke API dan kembali ke halaman utama setelah berhasil.
@@ -142,6 +143,7 @@ Data yang disimpan di `localStorage`:
 | `src/App.jsx` | Shell aplikasi, navigasi, proteksi route, dan route utama. |
 | `src/contexts/AuthContext.jsx` | State autentikasi, pemulihan sesi, login success, dan logout. |
 | `src/contexts/ThemeContext.jsx` | State tema dan persistensi tema. |
+| `src/hooks/useInput.js` | Custom Hook untuk mengelola nilai dan perubahan input form. |
 | `src/pages` | Halaman login, registrasi, daftar aktif, arsip, tambah catatan, detail, dan 404. |
 | `src/components` | Komponen reusable untuk daftar catatan, item catatan, pencarian, dan tombol aksi. |
 | `src/utils/network-data.js` | Helper komunikasi dengan Dicoding Notes API. |

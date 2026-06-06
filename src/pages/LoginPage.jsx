@@ -1,13 +1,14 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import useInput from '../hooks/useInput';
 import { login } from '../utils/network-data';
 
 function LoginPage() {
   const navigate = useNavigate();
   const { onLoginSuccess } = useAuth();
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [email, onEmailChange] = useInput('');
+  const [password, onPasswordChange] = useInput('');
   const [loading, setLoading] = React.useState(false);
 
   const onSubmit = async (event) => {
@@ -36,7 +37,7 @@ function LoginPage() {
           id="email"
           type="email"
           value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          onChange={onEmailChange}
           autoComplete="email"
           required
         />
@@ -45,7 +46,7 @@ function LoginPage() {
           id="password"
           type="password"
           value={password}
-          onChange={(event) => setPassword(event.target.value)}
+          onChange={onPasswordChange}
           autoComplete="current-password"
           required
         />
