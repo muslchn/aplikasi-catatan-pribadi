@@ -1,93 +1,146 @@
 import React from 'react';
-import { Link, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import {
+  Link,
+  Navigate,
+  NavLink,
+  Route,
+  Routes,
+} from 'react-router-dom';
 import AddNotePage from './pages/AddNotePage';
 import ArchivedNotesPage from './pages/ArchivedNotesPage';
 import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
 import NoteDetailPage from './pages/NoteDetailPage';
 import NotFoundPage from './pages/NotFoundPage';
-import {
-  addNote,
-  archiveNote,
-  deleteNote,
-  getAllNotes,
-  unarchiveNote,
-} from './utils/local-data';
+import RegisterPage from './pages/RegisterPage';
+import { useAuth } from './contexts/AuthContext';
+import { useTheme } from './contexts/ThemeContext';
+
+function ProtectedRoute({ children }) {
+  const { authUser } = useAuth();
+
+  if (!authUser) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+}
 
 function App() {
-  const navigate = useNavigate();
-  const [notes, setNotes] = React.useState(() => getAllNotes());
+  const { authUser, initializing, onLogout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
-  const syncNotes = () => {
-    setNotes(getAllNotes());
-  };
-
-  const onAddNote = ({ title, body }) => {
-    addNote({ title, body });
-    syncNotes();
-    navigate('/');
-  };
-
-  const onDeleteNote = (id) => {
-    deleteNote(id);
-    syncNotes();
-    navigate('/');
-  };
-
-  const onToggleArchive = (id, archived) => {
-    if (archived) {
-      unarchiveNote(id);
-    } else {
-      archiveNote(id);
-    }
-
-    syncNotes();
-  };
+  if (initializing) {
+    return (
+      <div className="app-container">
+        <main>
+          <p className="loading-indicator">Memuat aplikasi...</p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="app-container">
       <header className="app-header">
         <Link className="app-header__brand" to="/">Catatan Pribadi</Link>
-        <nav className="navigation" aria-label="Navigasi utama">
-          <ul>
-            <li>
-              <NavLink to="/" end>Aktif</NavLink>
-            </li>
-            <li>
-              <NavLink to="/archives">Arsip</NavLink>
-            </li>
-          </ul>
-        </nav>
+        <div className="app-header__right">
+          <button
+            className="header-button"
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Ubah tema"
+            title="Ubah tema"
+          >
+            {theme === 'dark' ? '☀' : '☾'}
+          </button>
+          {authUser ? (
+            <>
+              <nav className="navigation" aria-label="Navigasi utama">
+                <ul>
+                  <li>
+                    <NavLink to="/" end>Aktif</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/archives">Arsip</NavLink>
+                  </li>
+                </ul>
+              </nav>
+              <div className="user-menu">
+                <span>{authUser.name}</span>
+                <button type="button" onClick={onLogout}>Keluar</button>
+              </div>
+            </>
+          ) : (
+            <nav className="navigation" aria-label="Navigasi autentikasi">
+              <ul>
+                <li>
+                  <NavLink to="/login">Masuk</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/register">Daftar</NavLink>
+                </li>
+              </ul>
+            </nav>
+          )}
+        </div>
       </header>
 
       <main>
         <Routes>
           <Route
             path="/"
-            element={<HomePage notes={notes.filter((note) => !note.archived)} />}
+            element={(
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            )}
           />
           <Route
             path="/archives"
-            element={<ArchivedNotesPage notes={notes.filter((note) => note.archived)} />}
+            element={(
+              <ProtectedRoute>
+                <ArchivedNotesPage />
+              </ProtectedRoute>
+            )}
           />
           <Route
             path="/notes/new"
-            element={<AddNotePage addNote={onAddNote} />}
+            element={(
+              <ProtectedRoute>
+                <AddNotePage />
+              </ProtectedRoute>
+            )}
           />
           <Route
             path="/notes/:id"
             element={(
-              <NoteDetailPage
-                notes={notes}
-                deleteNote={onDeleteNote}
-                toggleArchive={onToggleArchive}
-              />
+              <ProtectedRoute>
+                <NoteDetailPage />
+              </ProtectedRoute>
             )}
           />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route
+            path="/login"
+            element={authUser ? <Navigate to="/" replace /> : <LoginPage />}
+          />
+          <Route
+            path="/register"
+            element={authUser ? <Navigate to="/" replace /> : <RegisterPage />}
+          />
+          <Route
+            path="*"
+            element={authUser ? <NotFoundPage /> : <Navigate to="/login" replace />}
+          />
         </Routes>
       </main>
     </div>
   );
 }
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default App;

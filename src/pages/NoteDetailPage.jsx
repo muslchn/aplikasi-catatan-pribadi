@@ -1,18 +1,40 @@
 import React from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import parser from 'html-react-parser';
-import PropTypes from 'prop-types';
 import NoteActionButton from '../components/NoteActionButton';
 import { showFormattedDate } from '../utils';
-
-function NoteDetailPage({
-  notes,
+import {
+  archiveNote,
   deleteNote,
-  toggleArchive,
-}) {
+  getNote,
+  unarchiveNote,
+} from '../utils/network-data';
+
+function NoteDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const note = notes.find((item) => item.id === id);
+  const [note, setNote] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+  const [processing, setProcessing] = React.useState(false);
+
+  React.useEffect(() => {
+    async function loadNote() {
+      setLoading(true);
+      const { error, data } = await getNote(id);
+
+      if (!error) {
+        setNote(data);
+      }
+
+      setLoading(false);
+    }
+
+    loadNote();
+  }, [id]);
+
+  if (loading) {
+    return <p className="loading-indicator">Memuat detail catatan...</p>;
+  }
 
   if (!note) {
     return (
@@ -24,9 +46,26 @@ function NoteDetailPage({
     );
   }
 
-  const onToggleArchive = () => {
-    toggleArchive(note.id, note.archived);
-    navigate(note.archived ? '/' : '/archives');
+  const onToggleArchive = async () => {
+    setProcessing(true);
+    const { error } = note.archived
+      ? await unarchiveNote(note.id)
+      : await archiveNote(note.id);
+    setProcessing(false);
+
+    if (!error) {
+      navigate(note.archived ? '/' : '/archives');
+    }
+  };
+
+  const onDeleteNote = async () => {
+    setProcessing(true);
+    const { error } = await deleteNote(note.id);
+    setProcessing(false);
+
+    if (!error) {
+      navigate('/');
+    }
   };
 
   return (
@@ -41,13 +80,15 @@ function NoteDetailPage({
           className="action--archive"
           label={note.archived ? 'Pindahkan dari arsip' : 'Arsipkan catatan'}
           onClick={onToggleArchive}
+          disabled={processing}
         >
           {note.archived ? '↩' : '↓'}
         </NoteActionButton>
         <NoteActionButton
           className="action--delete"
           label="Hapus catatan"
-          onClick={() => deleteNote(note.id)}
+          onClick={onDeleteNote}
+          disabled={processing}
         >
           ×
         </NoteActionButton>
@@ -55,17 +96,5 @@ function NoteDetailPage({
     </article>
   );
 }
-
-NoteDetailPage.propTypes = {
-  notes: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    body: PropTypes.string.isRequired,
-    createdAt: PropTypes.string.isRequired,
-    archived: PropTypes.bool.isRequired,
-  })).isRequired,
-  deleteNote: PropTypes.func.isRequired,
-  toggleArchive: PropTypes.func.isRequired,
-};
 
 export default NoteDetailPage;

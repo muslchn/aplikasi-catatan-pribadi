@@ -1,12 +1,29 @@
 import React from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import NotesList from '../components/NotesList';
 import SearchBar from '../components/SearchBar';
+import { getActiveNotes } from '../utils/network-data';
 
-function HomePage({ notes }) {
+function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const keyword = searchParams.get('keyword') || '';
+  const [notes, setNotes] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    async function loadNotes() {
+      setLoading(true);
+      const { error, data } = await getActiveNotes();
+
+      if (!error) {
+        setNotes(data);
+      }
+
+      setLoading(false);
+    }
+
+    loadNotes();
+  }, []);
 
   const setKeyword = (nextKeyword) => {
     const trimmedKeyword = nextKeyword.trimStart();
@@ -28,7 +45,11 @@ function HomePage({ notes }) {
         <h1>Catatan Aktif</h1>
       </div>
       <SearchBar keyword={keyword} setKeyword={setKeyword} />
-      <NotesList notes={filteredNotes} emptyMessage="Tidak ada catatan" />
+      {loading ? (
+        <p className="loading-indicator">Memuat catatan...</p>
+      ) : (
+        <NotesList notes={filteredNotes} emptyMessage="Tidak ada catatan" />
+      )}
       <div className="homepage__action">
         <Link className="action" to="/notes/new" aria-label="Tambah catatan" title="Tambah catatan">
           +
@@ -37,9 +58,5 @@ function HomePage({ notes }) {
     </section>
   );
 }
-
-HomePage.propTypes = {
-  notes: NotesList.propTypes.notes,
-};
 
 export default HomePage;

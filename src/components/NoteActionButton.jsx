@@ -7,6 +7,7 @@ function NoteActionButton({
   onClick,
   title,
   type,
+  disabled,
   children,
 }) {
   return (
@@ -14,6 +15,7 @@ function NoteActionButton({
       className={`action ${className}`}
       type={type}
       onClick={onClick}
+      disabled={disabled}
       aria-label={label}
       title={title || label}
     >
@@ -28,6 +30,7 @@ NoteActionButton.propTypes = {
   onClick: PropTypes.func,
   title: PropTypes.string,
   type: PropTypes.oneOf(['button', 'submit']),
+  disabled: PropTypes.bool,
   children: PropTypes.node.isRequired,
 };
 
@@ -36,6 +39,7 @@ NoteActionButton.defaultProps = {
   onClick: undefined,
   title: '',
   type: 'button',
+  disabled: false,
 };
 
 export default NoteActionButton;

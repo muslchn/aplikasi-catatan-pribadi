@@ -1,22 +1,31 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import NoteActionButton from '../components/NoteActionButton';
+import { addNote } from '../utils/network-data';
 
-function AddNotePage({ addNote }) {
+function AddNotePage() {
+  const navigate = useNavigate();
   const [title, setTitle] = React.useState('');
   const [body, setBody] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
 
     if (!title.trim() && !body.trim()) {
       return;
     }
 
-    addNote({
+    setLoading(true);
+    const { error } = await addNote({
       title: title.trim(),
       body: body.trim(),
     });
+    setLoading(false);
+
+    if (!error) {
+      navigate('/');
+    }
   };
 
   return (
@@ -43,15 +52,13 @@ function AddNotePage({ addNote }) {
           suppressContentEditableWarning
         />
         <div className="add-new-page__action">
-          <NoteActionButton label="Simpan catatan" type="submit">✓</NoteActionButton>
+          <NoteActionButton label="Simpan catatan" type="submit" disabled={loading}>
+            {loading ? '…' : '✓'}
+          </NoteActionButton>
         </div>
       </form>
     </section>
   );
 }
-
-AddNotePage.propTypes = {
-  addNote: PropTypes.func.isRequired,
-};
 
 export default AddNotePage;
